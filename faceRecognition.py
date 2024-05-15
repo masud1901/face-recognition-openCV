@@ -16,14 +16,17 @@ for img_file in os.listdir(path):
     classNames.append(os.path.splitext(img_file)[0])
 
 # Compute face encodings
-encodeListknown = [face_recognition.face_encodings(cv2.cvtColor(img, cv2.COLOR_BGR2RGB))[0] for img in images]
+encodeListknown = [
+    face_recognition.face_encodings(cv2.cvtColor(img, cv2.COLOR_BGR2RGB))[0]
+    for img in images
+]
 print("Encoding Complete")
 
 # Open webcam
 cap = cv2.VideoCapture(0)
 
 # Create a dictionary to store attendance data
-attendance = {name: {'Attendance': 'Absent', 'Timestamp': None} for name in classNames}
+attendance = {name: {"Attendance": "Absent", "Timestamp": None} for name in classNames}
 
 while True:
     success, img = cap.read()
@@ -41,19 +44,35 @@ while True:
             name = classNames[matchIndex].upper()
 
             # Update attendance only if the student has not been marked present yet
-            if attendance[name]['Attendance'] == 'Absent':
-                attendance[name]['Attendance'] = 'Present'
-                attendance[name]['Timestamp'] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            if attendance[name]["Attendance"] == "Absent":
+                attendance[name]["Attendance"] = "Present"
+                attendance[name]["Timestamp"] = datetime.now().strftime(
+                    "%Y-%m-%d %H:%M:%S"
+                )
 
             y1, x2, y2, x1 = faceLoc
             y1, x2, y2, x1 = y1 * 4, x2 * 4, y2 * 4, x1 * 4
             cv2.rectangle(img, (x1, y1), (x2, y2), (0, 255, 0), 2)
-            cv2.rectangle(img, (x1, y2 - 35), (x2, y2), (0, 255, 0), cv2.FILLED)
-            cv2.putText(img, name, (x1 + 6, y2 - 6), cv2.FONT_HERSHEY_COMPLEX, 1, (255, 255, 255), 2)
+            cv2.rectangle(
+                img,
+                (x1, y2 - 35),
+                (x2, y2),
+                (0, 255, 0),
+                cv2.FILLED,
+            )
+            cv2.putText(
+                img,
+                name,
+                (x1 + 6, y2 - 6),
+                cv2.FONT_HERSHEY_COMPLEX,
+                1,
+                (255, 255, 255),
+                2,
+            )
 
     cv2.imshow("Webcam", img)
     key = cv2.waitKey(1) & 0xFF
-    if key == ord('q'):
+    if key == ord("q"):
         break
 
 cap.release()

@@ -1,0 +1,12 @@
+#!/bin/bash
+
+# Run the first Python script
+python3 faceRecognition.py
+
+# Check if the first script executed successfully
+if [ $? -eq 0 ]; then
+    # Run the second Python script
+    python3 excel_report.py
+else
+    echo "Error: script1.py failed to execute."
+fi
