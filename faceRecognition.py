@@ -2,10 +2,10 @@ import cv2
 import numpy as np
 import face_recognition
 import os
-from datetime import datetime, date
+from datetime import datetime
 
 # Configuration
-path = "ImagesAttendance"
+path = "./ImagesAttendance"
 
 # Load known images and get class names
 images = []
@@ -16,10 +16,15 @@ for img_file in os.listdir(path):
     classNames.append(os.path.splitext(img_file)[0])
 
 # Compute face encodings
-encodeListknown = [
-    face_recognition.face_encodings(cv2.cvtColor(img, cv2.COLOR_BGR2RGB))[0]
-    for img in images
-]
+encodeListknown = []
+for img in images:
+    rgb_img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+    encodings = face_recognition.face_encodings(rgb_img)
+    if encodings:
+        encodeListknown.append(encodings[0])
+    else:
+        print(f"No face found in {classNames[len(encodeListknown)]}")
+
 print("Encoding Complete")
 
 # Open webcam
